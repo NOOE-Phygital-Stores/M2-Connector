@@ -31,7 +31,7 @@ class Logger extends \Monolog\Logger
 	 * @param DateTimeZone|null  $timezone   Optional timezone, if not provided date_default_timezone_get() will be used
 	 * @param ConfigData $configData
 	 */
-	public function __construct(string $name, array $handlers = [], array $processors = [], ?DateTimeZone $timezone = null, ConfigData $configData)
+	public function __construct(string $name, ConfigData $configData, array $handlers = [], array $processors = [], ?DateTimeZone $timezone = null)
 	{
 		$this->configData = $configData;
 		parent::__construct($name, $handlers, $processors, $timezone);
