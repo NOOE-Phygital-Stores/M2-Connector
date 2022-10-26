@@ -118,44 +118,46 @@ class Product implements ProductInterface
 		$productSku = $this->helperData->getProductSKu();
 
 		try {
-			$stockData = $this->getStockBySku($productSku);
-			$stockUpdateSkus = [];
+			if ($productSku) {
+				$stockData = $this->getStockBySku($productSku);
+				$stockUpdateSkus = [];
 
-			if ($stockData['type_id'] == 'configurable') {
-				$childProducts = $this->_linkManagement->getChildren($productSku);
-				echo $productSku . " (configurable)\n";
-				if (count($childProducts)) {
-					foreach ($childProducts as $childProduct) {
-						$stockData = $this->getStockBySku($childProduct->getSku());
-						$stockUpdateSkus[$childProduct->getSku()] = $stockData['qty'];
+				if ($stockData['type_id'] == 'configurable') {
+					$childProducts = $this->_linkManagement->getChildren($productSku);
+					echo $productSku . " (configurable)\n";
+					if (count($childProducts)) {
+						foreach ($childProducts as $childProduct) {
+							$stockData = $this->getStockBySku($childProduct->getSku());
+							$stockUpdateSkus[$childProduct->getSku()] = $stockData['qty'];
+						}
 					}
+				} else {
+					$stockUpdateSkus[$productSku] = $stockData['qty'];
+					echo $productSku . ": " . $stockData['qty'] . "\n";
 				}
-			} else {
-				$stockUpdateSkus[$productSku] = $stockData['qty'];
-				echo $productSku . ": " . $stockData['qty'] . "\n";
-			}
 
-			foreach ($stockUpdateSkus as $sku => $qty) {
-				echo ' |- ' . $sku . " (simple): " . $qty;
+				foreach ($stockUpdateSkus as $sku => $qty) {
+					echo ' |- ' . $sku . " (simple): " . $qty;
 
-				try {
-					$productStockItem = $this->connector->doRequest('stockItems/' . $sku);
+					try {
+						$productStockItem = $this->connector->doRequest('stockItems/' . $sku);
 
-					if (isset($productStockItem->item_id)) {
-						$itemId = $productStockItem->item_id;
-						$isInStock = $productStockItem->is_in_stock;
-						$data = ['stockItem' => ['qty' => $qty, 'is_in_stock' => $isInStock]];
-						$stockData = $this->getStockBySku($productSku);
-						$response = $this->connector->doRequest(self::API_REQUEST_ENDPOINT . '/' . $sku . '/stockItems/' . $itemId, 'PUT', $data);
-						echo ' -> Stock updated';
-					} else {
-						echo ' -> SKU doesn\'t exist';
+						if (isset($productStockItem->item_id)) {
+							$itemId = $productStockItem->item_id;
+							$isInStock = $productStockItem->is_in_stock;
+							$data = ['stockItem' => ['qty' => $qty, 'is_in_stock' => $isInStock]];
+							$stockData = $this->getStockBySku($productSku);
+							$response = $this->connector->doRequest(self::API_REQUEST_ENDPOINT . '/' . $sku . '/stockItems/' . $itemId, 'PUT', $data);
+							echo ' -> Stock updated';
+						} else {
+							echo ' -> SKU doesn\'t exist';
+						}
+
+						echo "\n";
+					} catch (Exception $e) {
+						$this->logger->error($e->getMessage());
+						throw new Exception($e->getMessage());
 					}
-
-					echo "\n";
-				} catch (Exception $e) {
-					$this->logger->error($e->getMessage());
-					throw new Exception($e->getMessage());
 				}
 			}
 		} catch (Exception $e) {

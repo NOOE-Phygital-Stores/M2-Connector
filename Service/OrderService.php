@@ -146,8 +146,9 @@ class OrderService
 					$orderComment = '';
 					$checkoutCommentLabel = '[CHECKOUT COMMENT] ';
 					foreach ($order->status_histories as $history) {
-						if (strpos($history->comment, $checkoutCommentLabel) !== false) {
-							$orderComment = str_replace($checkoutCommentLabel, '', $history->comment);
+						$comment = is_null($history->comment) ? '' : $history->comment;
+						if (strpos($comment, $checkoutCommentLabel) !== false) {
+							$orderComment = str_replace($checkoutCommentLabel, '', $comment);
 							break;
 						}
 					}
