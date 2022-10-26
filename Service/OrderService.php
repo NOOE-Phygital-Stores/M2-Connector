@@ -42,6 +42,12 @@ class OrderService
 	private $syncHelper;
 
 	/**
+	 * @var \Magento\Directory\Model\RegionFactory $regionFactory
+	 */
+	protected $regionFactory;
+
+
+	/**
 	 * OrderService constructor.
 	 *
 	 * @param \Nooe\Connector\Model\Order $order
@@ -49,20 +55,30 @@ class OrderService
 	 * @param \Nooe\Connector\Helper\Data $configData
 	 * @param \Nooe\Connector\Logger\Logger $logger
 	 * @param \Nooe\Connector\Helper\Sync $syncHelper
+	 * @param \Magento\Directory\Model\RegionFactory $regionFactory
 	 */
 	public function __construct(
 		\Nooe\Connector\Model\Order $order,
 		\Magento\Catalog\Model\ProductFactory $productFactory,
 		\Nooe\Connector\Helper\Data $configData,
 		\Nooe\Connector\Logger\Logger $logger,
-		\Nooe\Connector\Helper\Sync $syncHelper
+		\Nooe\Connector\Helper\Sync $syncHelper,
+		\Magento\Directory\Model\RegionFactory $regionFactory
 	) {
 		$this->order = $order;
 		$this->productFactory = $productFactory;
 		$this->configData = $configData;
 		$this->logger = $logger;
 		$this->syncHelper = $syncHelper;
+		$this->regionFactory = $regionFactory;
 	}
+
+	public function getRegionId($stateCode, $countryId)
+	{
+		$regionFactory = $this->regionFactory->create();
+		return $regionFactory->loadByCode($stateCode, $countryId)->getRegionId();
+	}
+
 
 	/**
 	 * Synchronizes the list of orders from a remote Magento store.
@@ -172,7 +188,7 @@ class OrderService
 							'company'				=> isset($billingAddress->company) ? $billingAddress->company : '',
 							'street'				=> isset($billingAddress->street[0]) ? $billingAddress->street[0] : '',
 							'country_id'			=> isset($billingAddress->country_id) ? $billingAddress->country_id : '',
-							'region'				=> isset($billingAddress->region) ? $billingAddress->region : '',
+							'region_id'				=> isset($billingAddress->region_code) ? $this->getRegionId($billingAddress->region_code, $billingAddress->country_id) : 0,
 							'city'					=> isset($billingAddress->city) ? $billingAddress->city : '',
 							'postcode'				=> isset($billingAddress->postcode) ? $billingAddress->postcode : '',
 							'telephone'				=> isset($billingAddress->telephone) ? $billingAddress->telephone : '',
@@ -189,7 +205,7 @@ class OrderService
 							'company'				=> isset($shippingAddress->company) ? $shippingAddress->company : '',
 							'street'				=> isset($shippingAddress->street[0]) ? $shippingAddress->street[0] : '',
 							'country_id'			=> isset($shippingAddress->country_id) ? $shippingAddress->country_id : '',
-							'region'				=> isset($shippingAddress->region) ? $shippingAddress->region : '',
+							'region_id'				=> isset($shippingAddress->region_code) ? $this->getRegionId($shippingAddress->region_code, $shippingAddress->country_id) : 0,
 							'city'					=> isset($shippingAddress->city) ? $shippingAddress->city : '',
 							'postcode'				=> isset($shippingAddress->postcode) ? $shippingAddress->postcode : '',
 							'telephone'				=> isset($shippingAddress->telephone) ? $shippingAddress->telephone : '',
