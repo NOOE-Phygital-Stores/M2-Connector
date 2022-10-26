@@ -22,6 +22,11 @@ class OrderService
 	private $order;
 
 	/**
+	 * @var Nooe\Connector\Model\Product
+	 */
+	private $product;
+
+	/**
 	 * @var \Magento\Catalog\Model\ProductFactory $productFactory
 	 */
 	protected $productFactory;
@@ -51,6 +56,7 @@ class OrderService
 	 * OrderService constructor.
 	 *
 	 * @param \Nooe\Connector\Model\Order $order
+	 * @param \Nooe\Connector\Model\Product $product
 	 * @param \Magento\Catalog\Model\ProductFactory $productFactory
 	 * @param \Nooe\Connector\Helper\Data $configData
 	 * @param \Nooe\Connector\Logger\Logger $logger
@@ -59,6 +65,7 @@ class OrderService
 	 */
 	public function __construct(
 		\Nooe\Connector\Model\Order $order,
+		\Nooe\Connector\Model\Product $product,
 		\Magento\Catalog\Model\ProductFactory $productFactory,
 		\Nooe\Connector\Helper\Data $configData,
 		\Nooe\Connector\Logger\Logger $logger,
@@ -66,6 +73,7 @@ class OrderService
 		\Magento\Directory\Model\RegionFactory $regionFactory
 	) {
 		$this->order = $order;
+		$this->product = $product;
 		$this->productFactory = $productFactory;
 		$this->configData = $configData;
 		$this->logger = $logger;
@@ -112,12 +120,10 @@ class OrderService
 							$productId = $product->getIdBySku($item->sku);
 
 							if ($productId) {
-								// check if stock is available
-								$product->load($productId);
-								$stockItem = $product->getExtensionAttributes()->getStockItem();
+								$stockItem = $this->product->getStockBySku($item->sku);
 
 								if (!empty($stockItem)) {
-									if (!$stockItem->getIsInStock() || $stockItem->getQty() < $item->qty_ordered) {
+									if (!$stockItem['is_in_stock'] || $stockItem['qty'] < $item->qty_ordered) {
 										$errorMessage = "ORDER #" . $order->increment_id . " - Quantity not available or out of stock for the SKU " . $item->sku;
 										$this->logger->error($errorMessage);
 										throw new Exception($errorMessage);

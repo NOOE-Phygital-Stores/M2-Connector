@@ -166,7 +166,7 @@ class Product implements ProductInterface
 		}
 	}
 
-	private function getStockBySku($sku)
+	public function getStockBySku($sku)
 	{
 		$storeId = $this->_storeManager->getStore()->getId();
 		$stockStatus = $this->stockRegistry->getStockStatusBySku($sku, $this->_storeManager->getWebsite()->getId());
