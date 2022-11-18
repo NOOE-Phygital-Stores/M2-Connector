@@ -66,6 +66,11 @@ class Order implements OrderInterface
 	protected $quoteManagement;
 
 	/**
+	 * @var \Magento\Sales\Model\Order\Status\HistoryFactory
+	 */
+	protected $orderHistoryFactory;
+
+	/**
 	 * @var \Magento\Quote\Model\Quote\Address\Rate
 	 */
 	protected $rate;
@@ -74,6 +79,7 @@ class Order implements OrderInterface
 	 * @var \Nooe\Connector\Helper\Data
 	 */
 	protected $configData;
+
 
 	/**
 	 * Order constructor.
@@ -87,6 +93,7 @@ class Order implements OrderInterface
 	 * @param \Magento\Catalog\Model\Product $product
 	 * @param \Magento\Quote\Model\QuoteManagement $quoteManagement
 	 * @param \Magento\Quote\Model\Quote\Address\Rate $rate
+	 * @param \Magento\Sales\Model\Order\Status\HistoryFactory
 	 * @param \Nooe\Connector\Helper\Data $configData
 	 * @param \Nooe\Connector\Logger\Logger $logger
 	 */
@@ -100,6 +107,7 @@ class Order implements OrderInterface
 		\Magento\Catalog\Model\Product $product,
 		\Magento\Quote\Model\QuoteManagement $quoteManagement,
 		\Magento\Quote\Model\Quote\Address\Rate $rate,
+		\Magento\Sales\Model\Order\Status\HistoryFactory $orderHistoryFactory,
 		\Nooe\Connector\Helper\Data $configData,
 		\Nooe\Connector\Logger\Logger $logger
 	) {
@@ -112,6 +120,7 @@ class Order implements OrderInterface
 		$this->_product = $product;
 		$this->quoteManagement = $quoteManagement;
 		$this->rate = $rate;
+		$this->orderHistoryFactory = $orderHistoryFactory;
 		$this->configData = $configData;
 		$this->logger = $logger;
 	}
