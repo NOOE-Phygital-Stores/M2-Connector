@@ -131,7 +131,6 @@ class Sync extends Command
 		\Nooe\Connector\Helper\Sync $syncHelper,
 		\Nooe\Connector\Helper\Data $configData
 	) {
-		$state->setAreaCode('adminhtml');
 		$registry->register('isSecureArea', true);
 
 		$this->_storeManagerInterface = $storeManagerInterface;
@@ -169,6 +168,7 @@ class Sync extends Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$this->state->setAreaCode('adminhtml');
 		$output->writeln($this->syncHelper->printHeading());
 		$action = null;
 		$increment = null;
