@@ -26,34 +26,37 @@
 				<field id="store_code" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Store Code</label>
 				</field>
-				<field id="order_prefix" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="store_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Store Id</label>
+				</field>
+				<field id="order_prefix" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Order Prefix</label>
 					<comment>Inserisci il prefisso dell'ordine</comment>
 				</field>
-				<field id="start_date" translate="label" type="date" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="start_date" translate="label" type="date" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Start Date</label>
 					<frontend_model>Nooe\Connector\Model\Elements\DateTime</frontend_model>
 					<comment>Synchronization start date</comment>
 				</field>
-				<field id="increment_id" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="increment_id" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Increment Id</label>
 					<frontend_model>Nooe\Connector\Model\Elements\Increment</frontend_model>
 				</field>
-				<field id="order_id" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="order_id" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Order Id</label>
 					<validate>validate-number</validate>
 					<frontend_model>Nooe\Connector\Model\Elements\Increment</frontend_model>
 				</field>
-				<field id="product_sku" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="product_sku" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Product SKU</label>
 					<comment>Specify the product SKU if you want enable stock syncronization.</comment>
 				</field>
-				<field id="salable_quantity" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="salable_quantity" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Use Salable Quantity</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 					<comment>If enabled, sync if exist Salable Quantity instead default quantity.</comment>
 				</field>
-				<field id="debug_mode" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+				<field id="debug_mode" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Debug mode</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
 					<comment>If enabled, logs will be shown in var/log/nooe_connector.log</comment>

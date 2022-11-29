@@ -23,6 +23,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	const STORE_CODE = 'nooe_connector/settings/store_code';
 
 	/**
+	 * XML path for Store Id.
+	 */
+	const STORE_ID = 'nooe_connector/settings/store_id';
+
+	/**
 	 * XML path for Start Date. Defines the start date for synchronization.
 	 */
 	const START_DATE = 'nooe_connector/settings/start_date';
@@ -99,13 +104,22 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	private function getConfig($config_path, $store = null)
 	{
-		$storeId = $store ? $store : 0;
-		$config = $this->scopeCollectionFactory->create();
-		$result = $config->addFieldToFilter('path', ['eq' => $config_path])->addFieldToFilter('scope', ['eq' => $storeId])->getFirstItem()->getValue();
+		switch ($config_path) {
+			case self::START_DATE:
+			case self::INCREMENT_ID:
+			case self::ORDER_ID:
+				$storeId = $store ? $store : 0;
+				$config = $this->scopeCollectionFactory->create();
+				$result = $config->addFieldToFilter('path', ['eq' => $config_path])->addFieldToFilter('scope', ['eq' => $storeId])->getFirstItem()->getValue();
+				break;
 
-		// Get cached config values
-		// $store = $this->_storeManager->getStore($store);
-		// $result = $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
+			default:
+				// Get cached config values
+				$store = $this->_storeManager->getStore($store);
+				$result = $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
+				break;
+		}
+
 		return $result;
 	}
 
@@ -140,6 +154,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	public function getStoreCode($storeId = null)
 	{
 		return $this->getConfig(self::STORE_CODE, $storeId);
+	}
+
+	/**
+	 * Returns store code configuration value.
+	 *
+	 * @param null|string|int|\Magento\Store\Api\Data\StoreInterface $storeId
+	 */
+	public function getStoreId($storeId = null)
+	{
+		return $this->getConfig(self::STORE_ID, $storeId);
 	}
 
 	/**
@@ -221,6 +245,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	{
 		return $this->writeConfig(self::ACCESS_TOKEN, $value, $storeId);
 	}
+
 	/**
 	 * Saves X into module config value.
 	 * @param string $value
@@ -229,6 +254,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	public function setStoreCode($value, $storeId = 0)
 	{
 		return $this->writeConfig(self::STORE_CODE, $value, $storeId);
+	}
+
+	/**
+	 * Saves X into module config value.
+	 * @param string $value
+	 * @param null|string|bool|int|\Magento\Store\Api\Data\StoreInterface $storeId
+	 */
+	public function setStoreId($value, $storeId = 0)
+	{
+		return $this->writeConfig(self::STORE_ID, $value, $storeId);
 	}
 
 	/**

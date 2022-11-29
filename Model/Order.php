@@ -130,9 +130,9 @@ class Order implements OrderInterface
 	 */
 	public function create($orderData)
 	{
-		$store = $this->_storeManager->getStore();
-		$storeId = $store->getId();
-		$websiteId = $this->_storeManager->getStore()->getWebsiteId();
+		$storeId = (int)$this->configData->getStoreId();
+		$store = $this->_storeManager->getStore($storeId);
+		$websiteId = $this->_storeManager->getStore($storeId)->getWebsiteId();
 		$customer = $this->customerFactory->create();
 		$customer->setWebsiteId($websiteId);
 		$customer->loadByEmail($orderData['email']); // load customet by email address
