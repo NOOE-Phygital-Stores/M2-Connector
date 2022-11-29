@@ -104,13 +104,22 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	private function getConfig($config_path, $store = null)
 	{
-		$storeId = $store ? $store : 0;
-		$config = $this->scopeCollectionFactory->create();
-		$result = $config->addFieldToFilter('path', ['eq' => $config_path])->addFieldToFilter('scope', ['eq' => $storeId])->getFirstItem()->getValue();
+		switch ($config_path) {
+			case self::START_DATE:
+			case self::INCREMENT_ID:
+			case self::ORDER_ID:
+				$storeId = $store ? $store : 0;
+				$config = $this->scopeCollectionFactory->create();
+				$result = $config->addFieldToFilter('path', ['eq' => $config_path])->addFieldToFilter('scope', ['eq' => $storeId])->getFirstItem()->getValue();
+				break;
 
-		// Get cached config values
-		// $store = $this->_storeManager->getStore($store);
-		// $result = $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
+			default:
+				// Get cached config values
+				$store = $this->_storeManager->getStore($store);
+				$result = $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $store);
+				break;
+		}
+
 		return $result;
 	}
 

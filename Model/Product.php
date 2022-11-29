@@ -169,7 +169,7 @@ class Product implements ProductInterface
 	public function getStockBySku($sku)
 	{
 		//$storeId = $this->_storeManager->getStore()->getId();
-		$storeId = $this->configData->getStoreId();
+		$storeId = (int)$this->configData->getStoreId();
 		$stockStatus = $this->stockRegistry->getStockStatusBySku($sku, $storeId);
 		$stockData = $stockStatus->getStockItem()->getData();
 

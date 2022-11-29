@@ -105,7 +105,7 @@ class OrderService
 
 		if ($totalOrderCount) {
 			foreach ($orders as $key => $order) {
-				echo $order->increment_id . ' (' . $order->status . ")";
+				// echo $order->increment_id . ' (' . $order->status . ")";
 				$count++;
 				$this->syncHelper->show_status($count, $totalOrderCount, 30);
 
@@ -122,8 +122,8 @@ class OrderService
 							if ($productId) {
 								$stockItem = $this->product->getStockBySku($item->sku);
 
-								if (!empty($stockItem)) {
-									if (!$stockItem['is_in_stock'] || $stockItem['qty'] < $item->qty_ordered) {
+								if (isset($stockItem['qty'])) {
+									if ($stockItem['qty'] < $item->qty_ordered) {
 										$errorMessage = "ORDER #" . $order->increment_id . " - Quantity not available or out of stock for the SKU " . $item->sku;
 										$this->logger->error($errorMessage);
 										throw new Exception($errorMessage);
@@ -233,7 +233,7 @@ class OrderService
 						throw new Exception($result['message']);
 					}
 				} catch (Exception $e) {
-					$this->logger->error("ORDER #" . $order->increment_id . " - " . $e->getMessage());
+					$this->logger->error("ORDER #" . $order->increment_id . " - " . $e->getMessage() . ' - ' . $e->getTraceAsString());
 					throw new Exception($e->getMessage());
 				}
 			}
