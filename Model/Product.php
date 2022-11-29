@@ -170,7 +170,8 @@ class Product implements ProductInterface
 	{
 		//$storeId = $this->_storeManager->getStore()->getId();
 		$storeId = (int)$this->configData->getStoreId();
-		$stockStatus = $this->stockRegistry->getStockStatusBySku($sku, $storeId);
+		$websiteId = $this->_storeManager->getStore($storeId)->getWebsiteId();
+		$stockStatus = $this->stockRegistry->getStockStatusBySku($sku, $websiteId);
 		$stockData = $stockStatus->getStockItem()->getData();
 
 		if ($this->configData->getSalableQuantity($storeId)) {
