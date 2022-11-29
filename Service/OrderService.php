@@ -51,6 +51,11 @@ class OrderService
 	 */
 	protected $regionFactory;
 
+	/**
+	 * @var \Magento\Store\Model\App\Emulation
+	 */
+	protected $emulation;
+
 
 	/**
 	 * OrderService constructor.
@@ -62,6 +67,7 @@ class OrderService
 	 * @param \Nooe\Connector\Logger\Logger $logger
 	 * @param \Nooe\Connector\Helper\Sync $syncHelper
 	 * @param \Magento\Directory\Model\RegionFactory $regionFactory
+	 * @param \Magento\Store\Model\App\Emulation $emulation
 	 */
 	public function __construct(
 		\Nooe\Connector\Model\Order $order,
@@ -70,7 +76,8 @@ class OrderService
 		\Nooe\Connector\Helper\Data $configData,
 		\Nooe\Connector\Logger\Logger $logger,
 		\Nooe\Connector\Helper\Sync $syncHelper,
-		\Magento\Directory\Model\RegionFactory $regionFactory
+		\Magento\Directory\Model\RegionFactory $regionFactory,
+		\Magento\Store\Model\App\Emulation $emulation
 	) {
 		$this->order = $order;
 		$this->product = $product;
@@ -79,6 +86,7 @@ class OrderService
 		$this->logger = $logger;
 		$this->syncHelper = $syncHelper;
 		$this->regionFactory = $regionFactory;
+		$this->emulation = $emulation;
 	}
 
 	public function getRegionId($stateCode, $countryId)
@@ -102,6 +110,9 @@ class OrderService
 		$orders = $this->order->getList($incrementId);
 		$totalOrderCount = count((array)$orders);
 		$count = 0;
+
+		$storeId = (int)$this->configData->getStoreId();
+		$this->emulation->startEnvironmentEmulation($storeId, 'frontend');
 
 		if ($totalOrderCount) {
 			foreach ($orders as $key => $order) {
@@ -238,5 +249,7 @@ class OrderService
 				}
 			}
 		}
+
+		$this->emulation->stopEnvironmentEmulation();
 	}
 }
