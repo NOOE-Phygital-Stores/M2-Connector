@@ -106,6 +106,8 @@ class OrderService
 	 */
 	public function sync($incrementId = null)
 	{
+		$nowDate = date('Y-m-d H:i:s');
+
 		// get orders from remote Magento
 		$orders = $this->order->getList($incrementId);
 		$totalOrderCount = count((array)$orders);
@@ -248,6 +250,8 @@ class OrderService
 					throw new Exception($e->getMessage());
 				}
 			}
+		} else {
+			$this->configData->setStartDate($nowDate);
 		}
 
 		$this->emulation->stopEnvironmentEmulation();
