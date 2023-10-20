@@ -16,6 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Framework\Exception\InvalidArgumentException;
 
 
 class Sync extends Command
@@ -56,7 +57,7 @@ class Sync extends Command
 	protected $_addressDataFactory;
 
 	/**
-	 * @var \Magento\Framework\Api\SearchCriteriaBuilder 
+	 * @var \Magento\Framework\Api\SearchCriteriaBuilder
 	 */
 	protected $_searchCriteriaBuilder;
 
@@ -200,8 +201,10 @@ class Sync extends Command
 			} catch (Exception $e) {
 				$output->writeln($e->getMessage());
 			}
-		} catch (\InvalidArgumentException $e) {
+		} catch (InvalidArgumentException $e) {
 			$output->writeln('<error>Invalid argument.</error>');
 		}
+
+		return \Magento\Framework\Console\Cli::RETURN_SUCCESS;
 	}
 }

@@ -173,9 +173,9 @@ class OrderService
 
 					$giftMessage = ['from' => '', 'to' => '', 'message' => ''];
 					if (isset($order->extension_attributes->gift_message)) {
-						$giftMessage['from'] = $order->extension_attributes->gift_message['sender'];
-						$giftMessage['to'] = $order->extension_attributes->gift_message['recipient'];
-						$giftMessage['message'] = $order->extension_attributes->gift_message['message'];
+						$giftMessage['from'] = $order->extension_attributes->gift_message->sender;
+						$giftMessage['to'] = $order->extension_attributes->gift_message->recipient;
+						$giftMessage['message'] = $order->extension_attributes->gift_message->message;
 					}
 
 					$orderComment = '';
