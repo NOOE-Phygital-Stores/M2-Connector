@@ -61,7 +61,7 @@ class Order implements OrderInterface
 	protected $_product;
 
 	/**
-	 * @var \Magento\Quote\Model\QuoteManagement 
+	 * @var \Magento\Quote\Model\QuoteManagement
 	 */
 	protected $quoteManagement;
 
@@ -246,11 +246,10 @@ class Order implements OrderInterface
 		$orderId		= $this->helperData->getOrderId();
 		$storeCode      = $this->helperData->getStoreCode();
 
-		$suckerInterval = ' +15 day';
-		$fromDate       = date('Y-m-d H:i:s', strtotime($startDate));
-		$toDate         = date('Y-m-d H:i:s', strtotime($startDate . $suckerInterval));
-
 		if ($startDate) {
+			$suckerInterval = ' +15 day';
+			$fromDate       = date('Y-m-d H:i:s', strtotime($startDate));
+			$toDate         = date('Y-m-d H:i:s', strtotime($startDate . $suckerInterval));
 
 			if (!is_null($incrementId)) {
 				$searchCriteria[] = 'searchCriteria[filter_groups][0][filters][0][field]=store_code&';
