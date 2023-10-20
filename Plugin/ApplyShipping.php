@@ -27,7 +27,7 @@ class ApplyShipping
 		$carrierCode,
 		$request
 	) {
-		if ($carrierCode == 'nooeshipping') {
+		if ($carrierCode == 'nooe_shipping') {
 			return false;
 		}
 
