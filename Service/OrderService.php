@@ -106,7 +106,8 @@ class OrderService
 	 */
 	public function sync($incrementId = null)
 	{
-		$nowDate = date('Y-m-d H:i:s');
+		// - cron schedule delay
+		$nowDate = date('Y-m-d H:i:s', strtotime("-10 minutes"));
 
 		// get orders from remote Magento
 		$orders = $this->order->getList($incrementId);
