@@ -171,10 +171,11 @@ class OrderService
 					$billingAddress = $order->billing_address;
 					$shippingAddress = $order->extension_attributes->shipping_assignments[0]->shipping->address;
 
-					$giftMessage = ['from' => '', 'to' => '', 'message' => ''];
+					$giftMessage = null;
 					if (isset($order->extension_attributes->gift_message)) {
-						$giftMessage['from'] = $order->extension_attributes->gift_message->sender;
-						$giftMessage['to'] = $order->extension_attributes->gift_message->recipient;
+						$giftMessage = [];
+						$giftMessage['sender'] = $order->extension_attributes->gift_message->sender;
+						$giftMessage['recipient'] = $order->extension_attributes->gift_message->recipient;
 						$giftMessage['message'] = $order->extension_attributes->gift_message->message;
 					}
 

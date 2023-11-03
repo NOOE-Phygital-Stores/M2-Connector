@@ -71,6 +71,11 @@ class Order implements OrderInterface
 	protected $orderHistoryFactory;
 
 	/**
+	 * @var \Magento\GiftMessage\Model\MessageFactory $messageFactory
+	 */
+	protected $messageFactory;
+
+	/**
 	 * @var \Magento\Quote\Model\Quote\Address\Rate
 	 */
 	protected $rate;
@@ -94,6 +99,7 @@ class Order implements OrderInterface
 	 * @param \Magento\Quote\Model\QuoteManagement $quoteManagement
 	 * @param \Magento\Quote\Model\Quote\Address\Rate $rate
 	 * @param \Magento\Sales\Model\Order\Status\HistoryFactory
+	 * @param \Magento\GiftMessage\Model\MessageFactory
 	 * @param \Nooe\Connector\Helper\Data $configData
 	 * @param \Nooe\Connector\Logger\Logger $logger
 	 */
@@ -108,6 +114,7 @@ class Order implements OrderInterface
 		\Magento\Quote\Model\QuoteManagement $quoteManagement,
 		\Magento\Quote\Model\Quote\Address\Rate $rate,
 		\Magento\Sales\Model\Order\Status\HistoryFactory $orderHistoryFactory,
+		\Magento\GiftMessage\Model\MessageFactory $messageFactory,
 		\Nooe\Connector\Helper\Data $configData,
 		\Nooe\Connector\Logger\Logger $logger
 	) {
@@ -121,6 +128,7 @@ class Order implements OrderInterface
 		$this->quoteManagement = $quoteManagement;
 		$this->rate = $rate;
 		$this->orderHistoryFactory = $orderHistoryFactory;
+		$this->messageFactory = $messageFactory;
 		$this->configData = $configData;
 		$this->logger = $logger;
 	}
@@ -214,6 +222,16 @@ class Order implements OrderInterface
 			$history->setIsCustomerNotified(false) // Enable Notify your customers via email
 				->setIsVisibleOnFront(false); // Enable order comment visible on sales order details
 			$order->addStatusHistory($history);
+		}
+
+		// Add gift message
+		if ($orderData['gift_message']) {
+			$giftMessage = $this->messageFactory->create();
+			$giftMessage->setSender($orderData['gift_message']['sender']);
+			$giftMessage->setRecipient($orderData['gift_message']['recipient']);
+			$giftMessage->setMessage($orderData['gift_message']['message']);
+			$giftObj = $giftMessage->save();
+			$order->setGiftMessageId($giftObj->getId());
 		}
 
 		$order->setEmailSent(1);
